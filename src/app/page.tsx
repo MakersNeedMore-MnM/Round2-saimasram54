@@ -76,13 +76,13 @@ export default function Home() {
         </div>
       ) : (
         /* FULL 3-PANE INTERACTIVE DASHBOARD VIEW */
-        <div className="flex h-screen flex-col overflow-hidden bg-black">
+        <div className="flex min-h-screen flex-col overflow-y-auto custom-scrollbar bg-black">
           {/* Dashboard Header Bar */}
-          <header className="flex h-14 items-center justify-between border-b border-[#1f1f1f] bg-black/90 px-4 sm:px-6 backdrop-blur-md">
+          <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-[#1f1f1f] bg-black/90 px-4 sm:px-6 backdrop-blur-md shrink-0">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setActiveDoc(null)}
-                className="flex items-center gap-1.5 rounded-[4px] border border-[#1f1f1f] bg-[#0a0a0a] px-2.5 py-1 text-xs font-medium text-neutral-300 hover:bg-[#171717] hover:border-neutral-700 hover:text-white transition"
+                className="flex items-center gap-1.5 rounded-[4px] border border-[#1f1f1f] bg-[#0a0a0a] px-2.5 py-1 text-xs font-medium text-neutral-300 hover:bg-[#171717] hover:border-neutral-700 hover:text-white transition cursor-pointer"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 Back
@@ -106,14 +106,14 @@ export default function Home() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsUploadOpen(true)}
-                className="rounded-[4px] border border-[#1f1f1f] bg-[#0a0a0a] px-3 py-1.5 text-xs font-medium text-neutral-300 hover:bg-[#171717] hover:border-neutral-700 hover:text-white transition"
+                className="rounded-[4px] border border-[#1f1f1f] bg-[#0a0a0a] px-3 py-1.5 text-xs font-medium text-neutral-300 hover:bg-[#171717] hover:border-neutral-700 hover:text-white transition cursor-pointer"
               >
                 Upload Another
               </button>
 
               <button
                 onClick={() => setIsExportOpen(true)}
-                className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-black hover:bg-neutral-200 transition"
+                className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-black hover:bg-neutral-200 transition cursor-pointer"
               >
                 <Download className="h-3.5 w-3.5" />
                 Export Report
@@ -122,7 +122,7 @@ export default function Home() {
           </header>
 
           {/* Main Content Area */}
-          <div className="flex flex-1 flex-col overflow-hidden p-4 space-y-4">
+          <div className="flex flex-1 flex-col p-4 space-y-4 min-h-0">
             {/* Top Executive Summary Bar */}
             <ExecutiveSummaryBar
               document={activeDoc}
@@ -131,11 +131,11 @@ export default function Home() {
             />
 
             {/* Dashboard Sub-Nav Tabs */}
-            <div className="flex items-center justify-between border-b border-[#1f1f1f] pb-2">
+            <div className="flex items-center justify-between border-b border-[#1f1f1f] pb-2 shrink-0">
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setDashboardTab('intelligence')}
-                  className={`inline-flex items-center gap-2 rounded-[4px] border px-3 py-1.5 text-xs font-medium transition ${
+                  className={`inline-flex items-center gap-2 rounded-[4px] border px-3 py-1.5 text-xs font-medium transition cursor-pointer ${
                     dashboardTab === 'intelligence'
                       ? 'bg-white text-black border-white'
                       : 'bg-[#0a0a0a] border-[#1f1f1f] text-neutral-400 hover:text-white hover:border-neutral-700'
@@ -147,7 +147,7 @@ export default function Home() {
 
                 <button
                   onClick={() => setDashboardTab('missing')}
-                  className={`inline-flex items-center gap-2 rounded-[4px] border px-3 py-1.5 text-xs font-medium transition ${
+                  className={`inline-flex items-center gap-2 rounded-[4px] border px-3 py-1.5 text-xs font-medium transition cursor-pointer ${
                     dashboardTab === 'missing'
                       ? 'bg-white text-black border-white'
                       : 'bg-[#0a0a0a] border-[#1f1f1f] text-neutral-400 hover:text-white hover:border-neutral-700'
@@ -159,7 +159,7 @@ export default function Home() {
 
                 <button
                   onClick={() => setDashboardTab('questions')}
-                  className={`inline-flex items-center gap-2 rounded-[4px] border px-3 py-1.5 text-xs font-medium transition ${
+                  className={`inline-flex items-center gap-2 rounded-[4px] border px-3 py-1.5 text-xs font-medium transition cursor-pointer ${
                     dashboardTab === 'questions'
                       ? 'bg-white text-black border-white'
                       : 'bg-[#0a0a0a] border-[#1f1f1f] text-neutral-400 hover:text-white hover:border-neutral-700'
@@ -171,7 +171,7 @@ export default function Home() {
 
                 <button
                   onClick={() => setDashboardTab('chat')}
-                  className={`inline-flex items-center gap-2 rounded-[4px] border px-3 py-1.5 text-xs font-medium transition ${
+                  className={`inline-flex items-center gap-2 rounded-[4px] border px-3 py-1.5 text-xs font-medium transition cursor-pointer ${
                     dashboardTab === 'chat'
                       ? 'bg-white text-black border-white'
                       : 'bg-[#0a0a0a] border-[#1f1f1f] text-neutral-400 hover:text-white hover:border-neutral-700'
@@ -188,9 +188,9 @@ export default function Home() {
             </div>
 
             {/* Active Tab View Rendering */}
-            <div className="flex-1 min-h-0 overflow-hidden">
+            <div className="flex-1 min-h-[580px] overflow-hidden">
               {dashboardTab === 'intelligence' && (
-                <div className="grid h-full min-h-0 gap-4 md:grid-cols-12 overflow-hidden">
+                <div className="grid h-full min-h-[580px] gap-4 md:grid-cols-12 overflow-hidden">
                   {/* LEFT PANE (Col 3): Navigation & Clause Index */}
                   <div className="h-full min-h-0 md:col-span-3">
                     <NavPane
