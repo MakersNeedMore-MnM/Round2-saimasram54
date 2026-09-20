@@ -6,7 +6,8 @@ export interface AIProvider {
     documentText: string,
     jurisdiction: Jurisdiction,
     fileName?: string,
-    fileSize?: string
+    fileSize?: string,
+    legalEvidence?: string
   ): Promise<LeaseDocument>;
 
   answerLeaseQuestion(

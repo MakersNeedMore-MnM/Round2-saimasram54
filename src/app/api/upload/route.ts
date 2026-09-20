@@ -77,13 +77,29 @@ export async function POST(req: NextRequest) {
       extractedPages = parsedDoc.pages;
     }
 
-    // Call active AI Provider for structured analysis
+    // Perform Supabase Vector RAG retrieval for key statutory rules matching this jurisdiction
+    let legalEvidence = '';
+    try {
+      const { retrieveLegalSourcesAsync } = await import('@/lib/legal-rag/retriever');
+      const ragContext = await retrieveLegalSourcesAsync(
+        fullText.substring(0, 3000), // First portion containing financial/deposit/termination clauses
+        jurisdiction.country,
+        jurisdiction.state,
+        4
+      );
+      legalEvidence = ragContext.formattedContextText;
+    } catch (ragErr) {
+      console.warn('[Upload API] Vector RAG retrieval skipped:', ragErr);
+    }
+
+    // Call active AI Provider for structured analysis with RAG evidence
     const aiProvider = getAIProvider();
     const leaseDocument = await aiProvider.analyzeDocument(
       fullText,
       jurisdiction,
       file.name,
-      `${(file.size / (1024 * 1024)).toFixed(2)} MB`
+      `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
+      legalEvidence
     );
 
     leaseDocument.pages = extractedPages.map((p) => ({

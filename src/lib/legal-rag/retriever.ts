@@ -1,9 +1,44 @@
 import { STATUTORY_LEGAL_DATABASE, StatutorySource } from './database';
 import { Chunk } from '../document/parser';
+import { searchLegalEvidence, formatLegalEvidence, LegalSearchResult } from '@/lib/rag/legal-search';
 
 export interface RetrievedLegalContext {
-  sources: StatutorySource[];
+  sources: (StatutorySource | LegalSearchResult)[];
   formattedContextText: string;
+}
+
+/**
+ * Async RAG retriever powered by Supabase Vector Search + Gemini Embeddings.
+ * Performs semantic vector search on legal_chunks table, falling back to local
+ * statutory database if Supabase returns 0 results or is unavailable.
+ */
+export async function retrieveLegalSourcesAsync(
+  queryOrClauseText: string,
+  country: string = 'United States',
+  state: string = 'California',
+  limit: number = 3
+): Promise<RetrievedLegalContext> {
+  const jurisdictionStr = state || country;
+
+  try {
+    const hits = await searchLegalEvidence(queryOrClauseText, {
+      jurisdiction: jurisdictionStr,
+      limit,
+      threshold: 0.25,
+    });
+
+    if (hits && hits.length > 0) {
+      return {
+        sources: hits,
+        formattedContextText: formatLegalEvidence(hits),
+      };
+    }
+  } catch (err) {
+    console.warn('[RAG Retriever] Supabase vector search fallback triggered:', err);
+  }
+
+  // Fallback to local statutory database
+  return retrieveLegalSources(queryOrClauseText, country, state, limit);
 }
 
 export function retrieveLegalSources(

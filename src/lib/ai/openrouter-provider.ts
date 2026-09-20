@@ -16,13 +16,15 @@ export class OpenRouterProvider implements AIProvider {
     documentText: string,
     jurisdiction: Jurisdiction,
     fileName: string = 'Uploaded_Lease.pdf',
-    fileSize: string = '1.5 MB'
+    fileSize: string = '1.5 MB',
+    legalEvidence?: string
   ): Promise<LeaseDocument> {
     const prompt = buildDocumentAnalysisPrompt(
       documentText,
       jurisdiction.country,
       jurisdiction.state,
-      jurisdiction.leaseType
+      jurisdiction.leaseType,
+      legalEvidence
     );
 
     // List of high-performing open-weight models supported on OpenRouter

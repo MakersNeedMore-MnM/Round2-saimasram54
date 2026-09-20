@@ -9,7 +9,8 @@ export class FallbackProvider implements AIProvider {
     documentText: string,
     jurisdiction: Jurisdiction,
     fileName: string = 'Uploaded_Lease.pdf',
-    fileSize: string = '1.5 MB'
+    fileSize: string = '1.5 MB',
+    legalEvidence?: string
   ): Promise<LeaseDocument> {
     // If the text matches or contains keywords from the sample lease, return curated analysis with requested jurisdiction
     const isSampleOrSimilar = documentText.includes('APEX REALTY') || documentText.includes('MERCER') || documentText.length > 2000;

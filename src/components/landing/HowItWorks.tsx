@@ -38,34 +38,35 @@ export const HowItWorks: React.FC = () => {
   ];
 
   return (
-    <section id="how-it-works" className="py-16">
+    <section id="how-it-works" className="py-20 border-b border-[#1f1f1f]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto">
-          <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+          <span className="font-mono text-xs uppercase tracking-widest text-neutral-400">PIPELINE</span>
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
             How LeaseLens AI Works
           </h2>
-          <p className="mt-3 text-sm text-slate-400">
+          <p className="mt-3 text-sm text-neutral-400">
             A transparent 5-step processing pipeline designed for speed, evidence, and accuracy.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {steps.map((step) => {
             const Icon = step.icon;
             return (
               <div
                 key={step.num}
-                className="relative rounded-xl border border-slate-800 bg-slate-900/60 p-5 shadow-lg flex flex-col justify-between"
+                className="relative rounded-lg border border-[#1f1f1f] bg-[#0a0a0a] p-5 flex flex-col justify-between hover:border-neutral-700 transition"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-bold text-indigo-400 font-mono">{step.num}</span>
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400">
+                    <span className="font-mono text-xs font-semibold text-neutral-400">{step.num}</span>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-[4px] border border-[#1f1f1f] bg-black text-white">
                       <Icon className="h-4 w-4" />
                     </div>
                   </div>
-                  <h3 className="text-base font-bold text-white">{step.title}</h3>
-                  <p className="mt-2 text-xs text-slate-400 leading-relaxed">{step.desc}</p>
+                  <h3 className="text-sm font-semibold text-white">{step.title}</h3>
+                  <p className="mt-2 text-xs text-neutral-400 leading-relaxed">{step.desc}</p>
                 </div>
               </div>
             );

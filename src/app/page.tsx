@@ -18,7 +18,7 @@ import { AskYourLeaseChat } from '@/components/dashboard/AskYourLeaseChat';
 import { ExportReportModal } from '@/components/dashboard/ExportReportModal';
 import { LeaseDocument, Clause, Jurisdiction } from '@/types/lease';
 import { SAMPLE_LEASE_ANALYSIS } from '@/lib/document/sample-lease';
-import { Shield, Sparkles, FileText, ArrowLeft, Download, MessageSquare, AlertTriangle, HelpCircle } from 'lucide-react';
+import { Shield, ArrowLeft, Download, MessageSquare, AlertTriangle, HelpCircle, Layers } from 'lucide-react';
 
 export default function Home() {
   const [activeDoc, setActiveDoc] = useState<LeaseDocument | null>(null);
@@ -62,7 +62,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-black text-white font-sans antialiased selection:bg-neutral-800 selection:text-white">
       {!activeDoc ? (
         /* LANDING PAGE VIEW */
         <div className="flex flex-col min-h-screen">
@@ -76,21 +76,23 @@ export default function Home() {
         </div>
       ) : (
         /* FULL 3-PANE INTERACTIVE DASHBOARD VIEW */
-        <div className="flex h-screen flex-col overflow-hidden bg-slate-950">
+        <div className="flex h-screen flex-col overflow-hidden bg-black">
           {/* Dashboard Header Bar */}
-          <header className="flex h-14 items-center justify-between border-b border-slate-800/80 bg-slate-950/90 px-4 sm:px-6">
+          <header className="flex h-14 items-center justify-between border-b border-[#1f1f1f] bg-black/90 px-4 sm:px-6 backdrop-blur-md">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setActiveDoc(null)}
-                className="flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white"
+                className="flex items-center gap-1.5 rounded-[4px] border border-[#1f1f1f] bg-[#0a0a0a] px-2.5 py-1 text-xs font-medium text-neutral-300 hover:bg-[#171717] hover:border-neutral-700 hover:text-white transition"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 Back
               </button>
 
-              <div className="flex items-center gap-2 border-l border-slate-800 pl-3">
-                <Shield className="h-5 w-5 text-indigo-400" />
-                <span className="text-sm font-bold text-white">LeaseLens<span className="text-indigo-400">.ai</span></span>
+              <div className="flex items-center gap-2 border-l border-[#1f1f1f] pl-3">
+                <div className="flex h-6 w-6 items-center justify-center rounded-[4px] bg-white text-black font-mono text-xs font-bold">
+                  L
+                </div>
+                <span className="text-sm font-semibold tracking-tight text-white">LeaseLens<span className="text-neutral-400 font-mono text-xs">.ai</span></span>
               </div>
             </div>
 
@@ -104,14 +106,14 @@ export default function Home() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsUploadOpen(true)}
-                className="rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white"
+                className="rounded-[4px] border border-[#1f1f1f] bg-[#0a0a0a] px-3 py-1.5 text-xs font-medium text-neutral-300 hover:bg-[#171717] hover:border-neutral-700 hover:text-white transition"
               >
                 Upload Another
               </button>
 
               <button
                 onClick={() => setIsExportOpen(true)}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-md shadow-indigo-600/30 hover:bg-indigo-500"
+                className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-black hover:bg-neutral-200 transition"
               >
                 <Download className="h-3.5 w-3.5" />
                 Export Report
@@ -129,59 +131,59 @@ export default function Home() {
             />
 
             {/* Dashboard Sub-Nav Tabs */}
-            <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between border-b border-[#1f1f1f] pb-2">
+              <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setDashboardTab('intelligence')}
-                  className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition ${
+                  className={`inline-flex items-center gap-2 rounded-[4px] border px-3 py-1.5 text-xs font-medium transition ${
                     dashboardTab === 'intelligence'
-                      ? 'bg-indigo-600 text-white shadow-md'
-                      : 'bg-slate-900 text-slate-400 hover:text-white'
+                      ? 'bg-white text-black border-white'
+                      : 'bg-[#0a0a0a] border-[#1f1f1f] text-neutral-400 hover:text-white hover:border-neutral-700'
                   }`}
                 >
-                  <Shield className="h-3.5 w-3.5" />
-                  3-Pane Intelligence Explorer
+                  <Layers className="h-3.5 w-3.5" />
+                  3-Pane Explorer
                 </button>
 
                 <button
                   onClick={() => setDashboardTab('missing')}
-                  className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition ${
+                  className={`inline-flex items-center gap-2 rounded-[4px] border px-3 py-1.5 text-xs font-medium transition ${
                     dashboardTab === 'missing'
-                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                      : 'bg-slate-900 text-slate-400 hover:text-white'
+                      ? 'bg-white text-black border-white'
+                      : 'bg-[#0a0a0a] border-[#1f1f1f] text-neutral-400 hover:text-white hover:border-neutral-700'
                   }`}
                 >
                   <AlertTriangle className="h-3.5 w-3.5" />
-                  Missing & Ambiguity Detectors
+                  Missing & Ambiguity
                 </button>
 
                 <button
                   onClick={() => setDashboardTab('questions')}
-                  className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition ${
+                  className={`inline-flex items-center gap-2 rounded-[4px] border px-3 py-1.5 text-xs font-medium transition ${
                     dashboardTab === 'questions'
-                      ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40'
-                      : 'bg-slate-900 text-slate-400 hover:text-white'
+                      ? 'bg-white text-black border-white'
+                      : 'bg-[#0a0a0a] border-[#1f1f1f] text-neutral-400 hover:text-white hover:border-neutral-700'
                   }`}
                 >
                   <HelpCircle className="h-3.5 w-3.5" />
-                  Personalized Questions Generator
+                  Negotiation Questions
                 </button>
 
                 <button
                   onClick={() => setDashboardTab('chat')}
-                  className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition ${
+                  className={`inline-flex items-center gap-2 rounded-[4px] border px-3 py-1.5 text-xs font-medium transition ${
                     dashboardTab === 'chat'
-                      ? 'bg-violet-600 text-white shadow-md'
-                      : 'bg-slate-900 text-slate-400 hover:text-white'
+                      ? 'bg-white text-black border-white'
+                      : 'bg-[#0a0a0a] border-[#1f1f1f] text-neutral-400 hover:text-white hover:border-neutral-700'
                   }`}
                 >
                   <MessageSquare className="h-3.5 w-3.5" />
-                  Ask Your Lease Q&A
+                  Ask Your Lease
                 </button>
               </div>
 
-              <span className="text-[10px] text-slate-500 font-mono">
-                {activeDoc.clauses.length} Clauses • {activeDoc.missingItems.length} Missing Items
+              <span className="text-[11px] text-neutral-500 font-mono">
+                {activeDoc.clauses.length} CLAUSES • {activeDoc.missingItems.length} MISSING ITEMS
               </span>
             </div>
 

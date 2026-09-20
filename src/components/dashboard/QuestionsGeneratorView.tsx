@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { LeaseDocument } from '@/types/lease';
-import { HelpCircle, Copy, Check, MessageSquare, ArrowRight } from 'lucide-react';
+import { HelpCircle, Copy, Check, ArrowRight } from 'lucide-react';
 
 interface QuestionsGeneratorViewProps {
   document: LeaseDocument;
@@ -39,50 +39,50 @@ export const QuestionsGeneratorView: React.FC<QuestionsGeneratorViewProps> = ({
   };
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-xl backdrop-blur-lg space-y-4">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+    <div className="rounded-lg border border-[#1f1f1f] bg-[#0a0a0a] p-4 shadow-xl space-y-4 font-sans">
+      <div className="flex items-center justify-between border-b border-[#1f1f1f] pb-3">
         <div>
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
-            <HelpCircle className="h-4 w-4 text-indigo-400" />
+          <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+            <HelpCircle className="h-4 w-4 text-white" />
             <span>Personalized Questions for Landlord / Legal Counsel</span>
           </h3>
-          <p className="text-xs text-slate-400">Generated directly from your uploaded lease document clauses.</p>
+          <p className="font-mono text-[11px] text-neutral-400">Generated directly from your uploaded lease document clauses.</p>
         </div>
 
         <button
           onClick={handleCopyAll}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:bg-slate-800"
+          className="inline-flex items-center gap-1.5 rounded-[4px] border border-[#1f1f1f] bg-black px-3 py-1.5 font-mono text-xs text-neutral-300 hover:bg-[#171717] hover:border-neutral-700 transition"
         >
-          {copiedIdx === -1 ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+          {copiedIdx === -1 ? <Check className="h-3.5 w-3.5 text-white" /> : <Copy className="h-3.5 w-3.5" />}
           <span>{copiedIdx === -1 ? 'Copied All!' : 'Copy All Questions'}</span>
         </button>
       </div>
 
-      <div className="space-y-2.5">
+      <div className="space-y-2">
         {questions.map((q, idx) => (
           <div
             key={idx}
-            className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/60 p-3.5 text-xs transition hover:border-slate-700"
+            className="flex items-center justify-between rounded-[4px] border border-[#1f1f1f] bg-black p-3 text-xs transition hover:border-neutral-700"
           >
             <div className="flex items-start gap-3">
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-600/20 text-[10px] font-bold text-indigo-400">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-[3px] border border-[#1f1f1f] bg-[#0a0a0a] font-mono text-[10px] font-medium text-neutral-300">
                 {idx + 1}
               </span>
-              <p className="text-slate-200 font-medium leading-relaxed">"{q}"</p>
+              <p className="text-neutral-200 font-medium leading-relaxed">"{q}"</p>
             </div>
 
             <div className="flex items-center gap-2 shrink-0 ml-3">
               <button
                 onClick={() => handleCopyOne(q, idx)}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white"
+                className="rounded-[4px] p-1.5 text-neutral-400 hover:bg-[#171717] hover:text-white transition"
                 title="Copy Question"
               >
-                {copiedIdx === idx ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
+                {copiedIdx === idx ? <Check className="h-4 w-4 text-white" /> : <Copy className="h-4 w-4" />}
               </button>
 
               <button
                 onClick={() => onAskInChat(q)}
-                className="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-indigo-500"
+                className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 font-mono text-[10px] font-medium text-black hover:bg-neutral-200"
               >
                 <span>Ask AI</span>
                 <ArrowRight className="h-3 w-3" />

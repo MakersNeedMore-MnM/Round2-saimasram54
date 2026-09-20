@@ -15,10 +15,30 @@ IMPORTANT INSTRUCTIONS:
 6. Highlight obligations and affected parties.
 `;
 
-export function buildDocumentAnalysisPrompt(documentText: string, country: string, state: string, leaseType: string): string {
+export function buildDocumentAnalysisPrompt(
+  documentText: string,
+  country: string,
+  state: string,
+  leaseType: string,
+  legalEvidence?: string
+): string {
+  const evidenceBlock = legalEvidence && legalEvidence.trim().length > 0
+    ? `
+STATUTORY LEGAL EVIDENCE (RETRIEVED FROM SUPABASE VECTOR DATABASE FOR JURISDICTION: ${state}, ${country}):
+"""
+${legalEvidence}
+"""
+CRITICAL COMPLIANCE INSTRUCTIONS:
+Compare the lease clauses directly against the official statutory excerpts provided above.
+If any clause in the lease agreement violates or contradicts a statutory rule (for example, demanding security deposit exceeding statutory caps, charging late fees above legal limits, or waiving landlord habitability duties):
+1. Mark the clause riskLevel as HIGH or CRITICAL.
+2. In the "legalContext" field, explicitly reference the matching statutory title and citation (e.g. "Contradicts California Assembly Bill 12 (AB 12)").
+`
+    : '';
+
   return `
 Target Jurisdiction: ${country}, State/Province: ${state}, Lease Type: ${leaseType}
-
+${evidenceBlock}
 Document Content:
 """
 ${documentText.substring(0, 25000)}

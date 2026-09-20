@@ -51,48 +51,68 @@ export async function processPagesWithVisionFallback(
 
   const ai = new GoogleGenAI({ apiKey: geminiKey });
 
-  try {
-    const base64Data = pdfBuffer.toString('base64');
-    const prompt = `${EXTRACTION_SYSTEM_PROMPT}\n\nPlease extract all text content from page(s): ${pageNumbersToProcess.join(', ')}. Format output cleanly page by page with '--- PAGE X ---' headers.`;
+  // Model cascade: try multiple Gemini models in order of preference
+  const VISION_MODEL_CASCADE = [
+    'gemini-2.5-flash',
+    'gemini-2.0-flash',
+    'gemini-2.5-pro',
+    'gemini-1.5-flash',
+    'gemini-1.5-pro',
+  ];
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            {
-              inlineData: {
-                mimeType: 'application/pdf',
-                data: base64Data,
+  const base64Data = pdfBuffer.toString('base64');
+  const prompt = `${EXTRACTION_SYSTEM_PROMPT}\n\nPlease extract all text content from page(s): ${pageNumbersToProcess.join(', ')}. Format output cleanly page by page with '--- PAGE X ---' headers.`;
+
+  let lastError: any = null;
+
+  for (const modelName of VISION_MODEL_CASCADE) {
+    try {
+      console.log(`[OCR Fallback] Attempting Vision extraction with model: ${modelName}`);
+
+      const response = await ai.models.generateContent({
+        model: modelName,
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              {
+                inlineData: {
+                  mimeType: 'application/pdf',
+                  data: base64Data,
+                },
               },
-            },
-            { text: prompt },
-          ],
+              { text: prompt },
+            ],
+          },
+        ],
+        config: {
+          temperature: 0.1,
         },
-      ],
-      config: {
-        temperature: 0.1,
-      },
-    });
+      });
 
-    const extractedText = response.text || '';
-    return parseVisionOutputPages(extractedText, pageNumbersToProcess, existingPages);
-  } catch (error) {
-    console.error('Gemini Vision OCR extraction failed:', error);
-    return existingPages.map((page) => {
-      if (pageNumbersToProcess.includes(page.pageNumber) && (!page.text || page.text.trim().length < 30)) {
-        return {
-          ...page,
-          text: `[SCANNED DOCUMENT PAGE ${page.pageNumber}] - Unable to perform full OCR on this page.`,
-          characterCount: 60,
-          extractionMethod: 'ocr',
-          isScanned: true,
-        };
-      }
-      return page;
-    });
+      const extractedText = response.text || '';
+      console.log(`[OCR Fallback] ✓ Vision extraction succeeded with model: ${modelName}`);
+      return parseVisionOutputPages(extractedText, pageNumbersToProcess, existingPages);
+    } catch (error: any) {
+      console.warn(`[OCR Fallback] ✗ Model ${modelName} failed:`, error?.message || error);
+      lastError = error;
+      // Continue to next model in cascade
+    }
   }
+
+  console.error('[OCR Fallback] All Gemini Vision models exhausted:', lastError);
+  return existingPages.map((page) => {
+    if (pageNumbersToProcess.includes(page.pageNumber) && (!page.text || page.text.trim().length < 30)) {
+      return {
+        ...page,
+        text: `[SCANNED DOCUMENT PAGE ${page.pageNumber}] - Unable to perform full OCR on this page.`,
+        characterCount: 60,
+        extractionMethod: 'ocr',
+        isScanned: true,
+      };
+    }
+    return page;
+  });
 }
 
 async function processPagesWithOpenRouterVision(

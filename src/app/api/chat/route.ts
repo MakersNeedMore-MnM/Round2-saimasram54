@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAIProvider } from '@/lib/ai';
-import { retrieveLegalSources, retrieveRelevantDocumentChunks } from '@/lib/legal-rag/retriever';
+import { retrieveLegalSourcesAsync, retrieveRelevantDocumentChunks } from '@/lib/legal-rag/retriever';
 import { chunkDocument } from '@/lib/document/parser';
 
 export const dynamic = 'force-dynamic';
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const state = jurisdiction?.state || 'California';
     const jurisdictionStr = `${state}, ${country}`;
 
-    const legalRAG = retrieveLegalSources(question, country, state, 3);
+    const legalRAG = await retrieveLegalSourcesAsync(question, country, state, 3);
 
     let chunksText = rawText || '';
     if (rawText && rawText.length > 500) {
