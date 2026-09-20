@@ -76,6 +76,12 @@
 
 ---
 
+## 📄 Sample Test Documents for Judges
+
+Judges and evaluators can find sample lease agreement files (`.docx`, `.pdf`) in the [`sample_documents/`](file:///c:/Users/saima/Downloads/legal_lease/sample_documents/README.md) directory of this repository. You can download these sample documents and test them directly via drag-and-drop in the **LeaseLens AI Upload Modal**.
+
+---
+
 ## 🛠️ Technology Stack
 
 - **Framework**: Next.js 15 (App Router)
