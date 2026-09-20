@@ -25,8 +25,13 @@
         │       ├── Gemini 2.5/1.5 Flash API Provider (`gemini-provider.ts`)
         │       └── Local Heuristic Fallback Engine (`fallback-provider.ts`)
         │
+        ├──► Supabase PostgreSQL + pgvector Engine (`src/lib/supabase/`, `src/lib/rag/legal-search.ts`)
+        │       ├── pgvector HNSW Vector Indexing (768-dim embeddings via Gemini)
+        │       ├── `match_legal_chunks` Custom Stored RPC Procedure
+        │       └── Statutory Legal Database (California, New York, Texas, UK, India, Canada)
+        │
         ├──► Legal Research & RAG Engine (`src/lib/legal-rag/`)
-        │       ├── Curated Statutory Legal Database (California, New York, Texas, UK, India, Canada)
+        │       ├── Multi-Jurisdiction Legal Database & Retriever
         │       └── Hybrid Vector & Keyword Chunk Retriever
         │
         └──► 3-Level Legal Intelligence Dashboard
@@ -42,26 +47,31 @@
 1. **Universal PDF Ingestion Engine (Text, Scanned, Image & Mixed PDFs)**:
    - **Magic Bytes Validation**: Verifies `%PDF-` signature (`0x25 0x50 0x44 0x46 0x2D`).
    - **Page-Aware Quality Scoring**: Evaluates text coverage per page.
-   - **Gemini Vision OCR Fallback**: Automatically invokes Gemini 2.5/1.5 Flash Vision to extract visible content from scanned pages without throwing false "invalid PDF" errors.
+   - **Gemini Vision OCR Fallback**: Automatically invokes Gemini Vision to extract visible content from scanned pages without throwing false "invalid PDF" errors.
    - **Mixed PDF Support**: Processes text pages via fast extraction and scanned pages via Vision OCR.
 
-2. **3-Level Intelligence Dashboard**:
+2. **Supabase Vector Database & pgvector RAG**:
+   - **Vector Database**: Powered by **Supabase PostgreSQL** with the `pgvector` extension enabled.
+   - **HNSW Indexing**: Uses high-performance HNSW cosine distance indexing (`vector_cosine_ops`) for real-time semantic retrieval over 768-dimensional legal embeddings.
+   - **Custom PostgreSQL RPC**: Invokes `match_legal_chunks` RPC for efficient vector search and jurisdiction-based filtering (`California`, `New York`, `Texas`, `UK`, `India`, `Canada`).
+
+3. **3-Level Intelligence Dashboard**:
    - **Level 1 (Document Understanding)**: Metadata extraction, dates, landlord/tenant roles, page & section index.
    - **Level 2 (Risk Intelligence)**: Transparent `Likelihood × Impact` risk model classifying items into `LOW`, `MEDIUM`, `HIGH`, or `CRITICAL`.
    - **Level 3 (Legal Context)**: Grounded cross-referencing against official statutory legislation.
 
-3. **Core Differentiator — Split Evidence View**:
+4. **Core Differentiator — Split Evidence View**:
    - **CONTRACT EVIDENCE**: Page #, Section #, and exact contract snippet.
-   - **LEGAL EVIDENCE**: Official statutory authority title, section citation, and statutory URL link.
+   - **LEGAL EVIDENCE**: Official statutory authority title, section citation, statutory URL link, and Supabase vector match score.
 
-4. **Grounded "Ask Your Lease" Assistant**:
+5. **Grounded "Ask Your Lease" Assistant**:
    - Interactive Q&A strictly grounded in document text and statutory legal sources.
    - Outputs structured responses: *Short Answer*, *According to Your Lease*, *Relevant Clause*, *Legal Context*, *Source*, *Confidence Rating*, and *Legal Disclaimer*.
 
-5. **Missing Information & Ambiguity Detectors**:
+6. **Missing Information & Ambiguity Detectors**:
    - Detects omitted deposit interest terms, walkthrough protocols, and vague wording with suggested clarification questions.
 
-6. **Instant Fail-Safe Demo Mode**:
+7. **Instant Fail-Safe Demo Mode**:
    - Includes a sample 5-page residential lease agreement with 8 complex clauses running through the full live AI analysis pipeline.
 
 ---
@@ -71,10 +81,29 @@
 - **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
+- **Database & Vector Search**: **Supabase** (PostgreSQL with `pgvector` extension)
+- **Database SDK**: `@supabase/supabase-js` (Browser & Server Admin Clients)
 - **Icons & UI**: Lucide React, Framer Motion
 - **AI SDK**: `@google/genai` (Google Gemini 2.5/1.5 Flash & Vision)
 - **Document Extractors**: `pdf-parse` (Text PDF), Gemini Vision (Scanned PDF OCR), `mammoth` (DOCX)
-- **Legal RAG**: In-memory vector chunking & statutory database index
+- **Legal RAG**: Supabase Vector Store + In-memory hybrid retriever
+
+---
+
+## 🗄️ Supabase Setup & Migration
+
+1. **Enable `pgvector` & Create RPC Function**:
+   Run the SQL statements in [`supabase_migration.sql`](file:///c:/Users/saima/Downloads/legal_lease/supabase_migration.sql) inside your Supabase SQL Editor:
+   ```sql
+   create extension if not exists vector;
+   -- Creates HNSW index and match_legal_chunks RPC procedure
+   ```
+
+2. **Database Seeding (Optional)**:
+   Seed statutory legal documents and embeddings into Supabase using the seed script:
+   ```bash
+   npx tsx src/scripts/seed-legal-db.ts
+   ```
 
 ---
 
@@ -86,9 +115,15 @@
    ```
 
 2. **Configure Environment Variables**:
-   Ensure `.env.local` contains your Gemini API key:
+   Create a `.env.local` file with your Gemini API key and Supabase credentials:
    ```env
+   # Gemini API Key
    GEMINI_API_KEY=your_gemini_api_key_here
+
+   # Supabase Configuration
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+   SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
    ```
    *(Note: `.env.local` is ignored in `.gitignore` to prevent secret exposure).*
 
