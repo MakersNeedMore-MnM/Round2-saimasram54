@@ -13,3 +13,41 @@
   --font-sans: "Geist Sans", sans-serif;
   --font-mono: "Geist Mono", monospace;
 }
+
+/* Custom Sleek Scrollbar for Dashboard & Analysis Panels */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f46 #18181b;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #0a0a0a;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 4px;
+  border: 2px solid #0a0a0a;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #71717a;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:active {
+  background: #a1a1aa;
+}
+
+/* Base Smooth Scrolling & Text Selection */
+html, body {
+  scroll-behavior: smooth;
+  overscroll-behavior-y: none;
+}

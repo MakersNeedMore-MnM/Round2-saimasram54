@@ -66,9 +66,9 @@ export const NavPane: React.FC<NavPaneProps> = ({
   };
 
   return (
-    <div className="flex h-full flex-col rounded-lg border border-[#1f1f1f] bg-[#0a0a0a] p-3.5 shadow-xl space-y-3 font-sans">
+    <div className="flex h-full min-h-0 flex-col rounded-lg border border-[#1f1f1f] bg-[#0a0a0a] p-3.5 shadow-xl font-sans">
       {/* Page Navigator Header */}
-      <div className="flex items-center justify-between border-b border-[#1f1f1f] pb-2.5">
+      <div className="flex items-center justify-between border-b border-[#1f1f1f] pb-2.5 mb-3 shrink-0">
         <div className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-neutral-400">
           <FileText className="h-3.5 w-3.5 text-white" />
           <span>Clause Index</span>
@@ -78,7 +78,7 @@ export const NavPane: React.FC<NavPaneProps> = ({
             <button
               key={pageNum}
               onClick={() => onSelectPage(pageNum)}
-              className={`h-5 min-w-[20px] rounded-[3px] font-mono text-[10px] font-medium transition ${
+              className={`h-5 min-w-[20px] rounded-[3px] font-mono text-[10px] font-medium transition cursor-pointer ${
                 activePage === pageNum
                   ? 'bg-white text-black font-semibold'
                   : 'bg-black border border-[#1f1f1f] text-neutral-400 hover:text-white hover:border-neutral-700'
@@ -91,7 +91,7 @@ export const NavPane: React.FC<NavPaneProps> = ({
       </div>
 
       {/* Search Input */}
-      <div className="relative">
+      <div className="relative mb-3 shrink-0">
         <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-neutral-500" />
         <input
           type="text"
@@ -103,12 +103,12 @@ export const NavPane: React.FC<NavPaneProps> = ({
       </div>
 
       {/* Category Pills */}
-      <div className="flex flex-wrap gap-1 border-b border-[#1f1f1f] pb-2.5">
+      <div className="flex flex-wrap gap-1 border-b border-[#1f1f1f] pb-2.5 mb-3 shrink-0">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => onSelectCategory(cat)}
-            className={`rounded-[3px] border px-2 py-0.5 font-mono text-[10px] font-medium transition ${
+            className={`rounded-[3px] border px-2 py-0.5 font-mono text-[10px] font-medium transition cursor-pointer ${
               selectedCategory === cat
                 ? 'bg-white text-black border-white'
                 : 'bg-black border-[#1f1f1f] text-neutral-400 hover:text-white hover:border-neutral-700'
@@ -120,7 +120,7 @@ export const NavPane: React.FC<NavPaneProps> = ({
       </div>
 
       {/* Clauses Explorer List */}
-      <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+      <div className="flex-1 min-h-0 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
         {filteredClauses.length === 0 ? (
           <div className="p-6 text-center font-mono text-xs text-neutral-500">
             No clauses found matching current filter.

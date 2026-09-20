@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Clause, LeaseDocument } from '@/types/lease';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, ChevronUp } from 'lucide-react';
 
 interface DocumentViewerProps {
   document: LeaseDocument;
@@ -18,12 +18,30 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
   activePage,
 }) => {
   const activeRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     if (selectedClause && activeRef.current) {
       activeRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [selectedClause]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      setShowScrollTop(el.scrollTop > 150);
+    };
+
+    el.addEventListener('scroll', handleScroll);
+    return () => el.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const getRiskBadgeStyle = (level: string) => {
     switch (level) {
@@ -38,9 +56,9 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
   };
 
   return (
-    <div className="flex h-full flex-col rounded-lg border border-[#1f1f1f] bg-[#0a0a0a] p-3.5 shadow-xl space-y-3 font-sans">
-      {/* Center Pane Header */}
-      <div className="flex items-center justify-between border-b border-[#1f1f1f] pb-2.5">
+    <div className="relative flex h-full min-h-0 flex-col rounded-lg border border-[#1f1f1f] bg-[#0a0a0a] p-3.5 shadow-xl font-sans">
+      {/* Fixed Header */}
+      <div className="flex items-center justify-between border-b border-[#1f1f1f] pb-2.5 mb-3 shrink-0">
         <div className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-neutral-400">
           <BookOpen className="h-3.5 w-3.5 text-white" />
           <span>Document Viewer</span>
@@ -50,8 +68,8 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
         </span>
       </div>
 
-      {/* Document Text Body Container */}
-      <div className="flex-1 overflow-y-auto pr-1 space-y-4 custom-scrollbar text-xs leading-relaxed text-neutral-300">
+      {/* Fluid Scrollable Document Text Body */}
+      <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-4 custom-scrollbar text-xs leading-relaxed text-neutral-300">
         {document.clauses.map((clause) => {
           const isSelected = selectedClause?.id === clause.id;
 
@@ -88,6 +106,17 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
           );
         })}
       </div>
+
+      {/* Floating Scroll to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          title="Scroll to top"
+          className="absolute bottom-4 right-4 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-neutral-700 bg-neutral-900/90 text-white shadow-lg backdrop-blur hover:bg-neutral-800 transition cursor-pointer"
+        >
+          <ChevronUp className="h-4 w-4" />
+        </button>
+      )}
     </div>
   );
 };

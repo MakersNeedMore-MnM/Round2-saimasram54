@@ -188,11 +188,11 @@ export default function Home() {
             </div>
 
             {/* Active Tab View Rendering */}
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 min-h-0 overflow-hidden">
               {dashboardTab === 'intelligence' && (
-                <div className="grid h-full gap-4 md:grid-cols-12">
+                <div className="grid h-full min-h-0 gap-4 md:grid-cols-12 overflow-hidden">
                   {/* LEFT PANE (Col 3): Navigation & Clause Index */}
-                  <div className="h-full md:col-span-3">
+                  <div className="h-full min-h-0 md:col-span-3">
                     <NavPane
                       clauses={activeDoc.clauses}
                       selectedCategory={selectedCategory}
@@ -211,7 +211,7 @@ export default function Home() {
                   </div>
 
                   {/* CENTER PANE (Col 5): Lease Document Viewer */}
-                  <div className="h-full md:col-span-5">
+                  <div className="h-full min-h-0 md:col-span-5">
                     <DocumentViewer
                       document={activeDoc}
                       selectedClause={selectedClause}
@@ -221,7 +221,7 @@ export default function Home() {
                   </div>
 
                   {/* RIGHT PANE (Col 4): AI Legal Intelligence Panel */}
-                  <div className="h-full md:col-span-4">
+                  <div className="h-full min-h-0 md:col-span-4">
                     <IntelligencePanel
                       clause={selectedClause}
                       jurisdiction={activeDoc.jurisdiction}
